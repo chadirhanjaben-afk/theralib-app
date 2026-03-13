@@ -1,0 +1,25 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Professional profile photos and gallery
+    match /professionals/{professionalId}/{allPaths=**} {
+      // Anyone can view images (for public profiles)
+      allow read: if true;
+
+      // Only the professional themselves can upload/delete
+      allow write: if request.auth != null
+                   && request.auth.uid == professionalId
+                   && request.resource.size < 5 * 1024 * 1024  // Max 5 MB
+                   && request.resource.contentType.matches('image/.*');
+
+      allow delete: if request.auth != null
+                    && request.auth.uid == professionalId;
+    }
+
+    // Block everything else by default
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

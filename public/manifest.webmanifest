@@ -1,0 +1,48 @@
+{
+  "name": "Theralib – Trouvez votre praticien bien-être",
+  "short_name": "Theralib",
+  "description": "Trouvez et réservez des professionnels du bien-être près de chez vous.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8FAFA",
+  "theme_color": "#1B3C4D",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "fr",
+  "categories": ["health", "lifestyle", "medical"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Répertoire",
+      "short_name": "Répertoire",
+      "url": "/repertoire",
+      "icons": []
+    },
+    {
+      "name": "Mon tableau de bord",
+      "short_name": "Dashboard",
+      "url": "/dashboard",
+      "icons": []
+    }
+  ]
+}

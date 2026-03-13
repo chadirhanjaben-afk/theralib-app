@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Firebase Auth Test</title>
+  <style>
+    body { font-family: monospace; padding: 40px; max-width: 800px; margin: 0 auto; background: #111; color: #0f0; }
+    h1 { color: #0ff; }
+    .box { background: #222; padding: 16px; border-radius: 8px; margin: 16px 0; }
+    .success { color: #0f0; }
+    .error { color: #f44; }
+    .info { color: #0ff; }
+    button { padding: 12px 24px; background: #2dd4bf; color: #000; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; margin: 8px 4px; }
+    button:hover { background: #14b8a6; }
+    #log { white-space: pre-wrap; font-size: 12px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <h1>Firebase Auth Direct Test</h1>
+  <div class="box">
+    <div id="status">Loading Firebase SDK...</div>
+  </div>
+  <div class="box">
+    <button onclick="loginClient()">Login as Client (testclient@theralib.fr)</button>
+    <button onclick="loginPro()">Login as Pro (testpro@theralib.fr)</button>
+    <button onclick="checkAuth()">Check Current Auth</button>
+    <button onclick="goToDashboard()">Go to Dashboard</button>
+  </div>
+  <div class="box">
+    <div id="log"></div>
+  </div>
+
+  <!-- Firebase v10 modular SDK from CDN -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDG7Zxmn-MQxToKoo0pZMnfCqaTDDHEllw",
+      authDomain: "theralib-app.firebaseapp.com",
+      projectId: "theralib-app",
+      storageBucket: "theralib-app.firebasestorage.app",
+      messagingSenderId: "738113922531",
+      appId: "1:738113922531:web:27112cda784c37bbebecd6"
+    };
+
+    const logEl = document.getElementById('log');
+    const statusEl = document.getElementById('status');
+
+    function log(msg, cls = '') {
+      const ts = new Date().toLocaleTimeString();
+      logEl.innerHTML += `<span class="${cls}">[${ts}] ${msg}</span>\n`;
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    log('Initializing Firebase app...', 'info');
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    log('Firebase app initialized', 'info');
+    log(`Auth instance created. Current user: ${auth.currentUser?.email || 'null'}`, 'info');
+
+    // Listen for auth state changes
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        log(`onAuthStateChanged: User signed in - ${user.email} (${user.uid})`, 'success');
+        statusEl.innerHTML = `<span class="success">Signed in: ${user.email} (UID: ${user.uid})</span>`;
+      } else {
+        log('onAuthStateChanged: No user signed in', 'info');
+        statusEl.innerHTML = '<span class="error">Not signed in</span>';
+      }
+    });
+
+    // Make functions globally available
+    window.loginClient = async function() {
+      log('Attempting login as testclient@theralib.fr...', 'info');
+      try {
+        const result = await signInWithEmailAndPassword(auth, 'testclient@theralib.fr', 'Test123!');
+        log(`LOGIN SUCCESS!`, 'success');
+        log(`  UID: ${result.user.uid}`, 'success');
+        log(`  Email: ${result.user.email}`, 'success');
+        log(`  Display Name: ${result.user.displayName}`, 'success');
+        log(`  Token: ${(await result.user.getIdToken()).substring(0, 30)}...`, 'success');
+      } catch (err) {
+        log(`LOGIN ERROR: ${err.code} - ${err.message}`, 'error');
+      }
+    };
+
+    window.loginPro = async function() {
+      log('Attempting login as testpro@theralib.fr...', 'info');
+      try {
+        const result = await signInWithEmailAndPassword(auth, 'testpro@theralib.fr', 'Test123!');
+        log(`LOGIN SUCCESS!`, 'success');
+        log(`  UID: ${result.user.uid}`, 'success');
+        log(`  Email: ${result.user.email}`, 'success');
+      } catch (err) {
+        log(`LOGIN ERROR: ${err.code} - ${err.message}`, 'error');
+      }
+    };
+
+    window.checkAuth = function() {
+      const user = auth.currentUser;
+      if (user) {
+        log(`Current user: ${user.email} (${user.uid})`, 'success');
+      } else {
+        log('No user currently signed in', 'error');
+      }
+    };
+
+    window.goToDashboard = function() {
+      window.location.href = '/dashboard/client';
+    };
+
+    log('Ready! Click a button to login.', 'info');
+  </script>
+</body>
+</html>

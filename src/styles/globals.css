@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
-
 @layer base {
   :root {
     --brand-petrol: #1B3C4D;
@@ -46,7 +44,8 @@
   }
 
   .card-hover {
-    @apply card hover:shadow-md hover:border-brand-teal/20 transition-all duration-200;
+    @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-6
+           hover:shadow-md hover:border-brand-teal/20 transition-all duration-200;
   }
 
   .input-field {
@@ -60,10 +59,12 @@
   }
 
   .badge-teal {
-    @apply badge bg-brand-teal-bg text-brand-teal;
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
+           bg-brand-teal-bg text-brand-teal;
   }
 
   .badge-warm {
-    @apply badge bg-amber-50 text-brand-warm;
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
+           bg-amber-50 text-brand-warm;
   }
 }

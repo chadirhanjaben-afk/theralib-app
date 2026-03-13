@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="ig" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5AAFAF"/>
+      <stop offset="100%" stop-color="#3D8B8B"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="#1B3C4D"/>
+  <g transform="translate(150, 100)">
+    <rect x="96" y="16" width="16" height="200" rx="8" fill="url(#ig)"/>
+    <path d="M 12 42 Q 104 -14, 196 42" fill="none" stroke="url(#ig)" stroke-width="16" stroke-linecap="round"/>
+    <circle cx="196" cy="34" r="14" fill="#7ECFCF"/>
+  </g>
+  <text x="256" y="396" font-family="'Quicksand', sans-serif" font-size="46" text-anchor="middle" letter-spacing="2">
+    <tspan fill="#8BBFBF" font-weight="300">thera</tspan><tspan fill="#FFFFFF" font-weight="600">lib</tspan>
+  </text>
+</svg>

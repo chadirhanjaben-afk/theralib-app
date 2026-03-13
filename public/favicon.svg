@@ -1,8 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="fg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5AAFAF"/>
+      <stop offset="100%" stop-color="#3D8B8B"/>
+    </linearGradient>
+  </defs>
   <rect width="64" height="64" rx="14" fill="#1B3C4D"/>
-  <g transform="translate(8, 18)">
-    <path d="M 0 10 C 13.2 3, 26.4 3, 39.6 10 C 52.8 17, 48 17, 48 10" fill="none" stroke="rgba(200,220,220,0.45)" stroke-width="4" stroke-linecap="round"/>
-    <path d="M 0 18 C 13.2 11, 26.4 11, 39.6 18 C 52.8 25, 48 25, 48 18" fill="none" stroke="#5AAFAF" stroke-width="5" stroke-linecap="round"/>
-    <path d="M 0 26 C 13.2 19, 26.4 19, 39.6 26 C 52.8 33, 48 33, 48 26" fill="none" stroke="rgba(90,175,175,0.5)" stroke-width="5" stroke-linecap="round"/>
+  <g transform="translate(14, 10)">
+    <rect x="16" y="4" width="3.5" height="44" rx="1.75" fill="url(#fg)"/>
+    <path d="M 2 10 Q 18 -2, 34 10" fill="none" stroke="url(#fg)" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="34" cy="8" r="3" fill="#7ECFCF"/>
   </g>
 </svg>

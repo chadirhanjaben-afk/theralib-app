@@ -48,3 +48,8 @@ ui-debug.log
 
 # Stripe CLI
 .stripe/
+
+# Environment variables
+.env.local
+.env.production
+.env*.local

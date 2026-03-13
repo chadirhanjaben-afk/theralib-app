@@ -23,12 +23,26 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ['Quicksand', 'Nunito', 'Inter', 'sans-serif'],
+        sans: ['var(--font-quicksand)', 'Quicksand', 'Nunito', 'Inter', 'sans-serif'],
       },
       borderRadius: {
         'xl': '12px',
         '2xl': '16px',
         '3xl': '24px',
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.2s ease-out',
+        'slide-up': 'slideUp 0.3s ease-out',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
       },
     },
   },

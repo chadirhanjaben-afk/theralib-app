@@ -1,19 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 225.7" width="420" height="225.7">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
   <defs>
-    <linearGradient id="d-gt" x1="0%" y1="0%" x2="100%" y2="0%">
+    <linearGradient id="mgd" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#7ECFCF"/>
       <stop offset="100%" stop-color="#5AAFAF"/>
     </linearGradient>
-    <linearGradient id="d-gd" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#2d5f6b"/>
-      <stop offset="100%" stop-color="#15303F"/>
-    </linearGradient>
   </defs>
-  <g transform="translate(50.0, 0)">
-    <path d="M 0 44 C 88.0 24, 72.0 24, 160.0 44 C 248.0 64, 232.0 64, 320 44" fill="none" stroke="rgba(200,220,220,0.45)" stroke-width="8" stroke-linecap="round"/>
-    <path d="M 0 62 C 88.0 42, 72.0 42, 160.0 62 C 248.0 82, 232.0 82, 320 62" fill="none" stroke="#5AAFAF" stroke-width="9" stroke-linecap="round"/>
-    <path d="M 0 80 C 88.0 60, 72.0 60, 160.0 80 C 248.0 100, 232.0 100, 320 80" fill="none" stroke="rgba(90,175,175,0.5)" stroke-width="10" stroke-linecap="round"/>
+  <g transform="translate(8, 8)">
+    <rect x="24" y="0" width="4" height="64" rx="2" fill="url(#mgd)"/>
+    <path d="M 6 8 Q 26 -4, 46 8" fill="none" stroke="url(#mgd)" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="46" cy="6" r="3.5" fill="#A0E4E4"/>
   </g>
-  <text x="210.0" y="175.7" font-family="'Quicksand', 'Nunito', Verdana, sans-serif" font-size="62" text-anchor="middle" letter-spacing="1"><tspan fill="#b0cece" font-weight="500">thera</tspan><tspan fill="#ffffff" font-weight="700">lib</tspan></text>
-  <text x="210.0" y="205.7" font-family="'Quicksand', 'Nunito', Verdana, sans-serif" font-size="12" font-weight="400" fill="#7ECFCF" text-anchor="middle" letter-spacing="4">VALORISEZ VOTRE BIEN-ETRE</text>
+  <text x="72" y="52" font-family="'Quicksand', 'Inter', sans-serif" font-size="38" letter-spacing="0.5">
+    <tspan fill="#B0D0D0" font-weight="300">thera</tspan><tspan fill="#FFFFFF" font-weight="600">lib</tspan>
+  </text>
 </svg>

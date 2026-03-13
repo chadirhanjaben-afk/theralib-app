@@ -12,8 +12,12 @@ export const COLLECTIONS = {
   LOYALTY_POINTS: 'loyaltyPoints',
   AFFILIATIONS: 'affiliations',
   NOTIFICATIONS: 'notifications',
+  AVAILABILITY: 'availability',
+  INVOICES: 'invoices',
+  COUNTERS: 'counters',
   SUPPORT_TICKETS: 'supportTickets',
   BLOG_POSTS: 'blogPosts',
   FORUM_THREADS: 'forumThreads',
   FORUM_REPLIES: 'forumReplies',
+  PROMO_CODES: 'promoCodes',
 } as const;
