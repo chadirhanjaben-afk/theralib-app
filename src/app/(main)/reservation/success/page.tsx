@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { doc, getDoc } from 'firebase/firestore';
@@ -8,6 +8,14 @@ import { db } from '@/lib/firebase/config';
 import { COLLECTIONS } from '@/lib/firebase/collections';
 
 export default function ReservationSuccessPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><p>Chargement...</p></div>}>
+      <ReservationSuccessContent />
+    </Suspense>
+  );
+}
+
+function ReservationSuccessContent() {
   const searchParams = useSearchParams();
   const bookingId = searchParams.get('booking');
   const [loading, setLoading] = useState(true);

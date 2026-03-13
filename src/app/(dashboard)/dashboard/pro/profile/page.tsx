@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, Suspense } from 'react';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
@@ -22,6 +22,14 @@ const SPECIALTIES = [
 ];
 
 export default function ProProfilePage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><p>Chargement...</p></div>}>
+      <ProProfileContent />
+    </Suspense>
+  );
+}
+
+function ProProfileContent() {
   const { user } = useAuth();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);

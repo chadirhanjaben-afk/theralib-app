@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Timestamp } from 'firebase/firestore';
@@ -60,6 +60,14 @@ function calculateEndTime(startTime: string, durationMinutes: number): string {
 type Step = 'service' | 'datetime' | 'info' | 'confirm';
 
 export default function ReservationPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><p>Chargement...</p></div>}>
+      <ReservationContent />
+    </Suspense>
+  );
+}
+
+function ReservationContent() {
   const params = useParams();
   const router = useRouter();
   const { user } = useAuth();
