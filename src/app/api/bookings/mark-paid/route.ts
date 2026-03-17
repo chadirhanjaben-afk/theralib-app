@@ -79,8 +79,9 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
-    console.error('[mark-paid] Error:', error?.message || error);
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('[mark-paid] Error:', errorMsg);
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }

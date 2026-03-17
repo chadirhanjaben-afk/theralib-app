@@ -105,8 +105,9 @@ export async function POST(request: NextRequest) {
     });
 
     return response;
-  } catch (error: any) {
-    console.error('[Signup API] Error:', error?.message || error);
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('[Signup API] Error:', errorMsg);
     return NextResponse.json(
       { error: 'Erreur serveur', code: 'auth/internal-error' },
       { status: 500 }

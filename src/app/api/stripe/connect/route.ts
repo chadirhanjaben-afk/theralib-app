@@ -3,6 +3,8 @@ import { stripe } from '@/lib/stripe/config';
 import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { COLLECTIONS } from '@/lib/firebase/collections';
+import { getSiteUrl } from '@/lib/utils/site-url';
+import logger from '@/lib/utils/logger';
 
 // POST: Create Stripe Connect account + onboarding link for a professional
 export async function POST(request: Request) {
@@ -51,7 +53,7 @@ export async function POST(request: Request) {
     }
 
     // Create onboarding link
-    const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const origin = request.headers.get('origin') || getSiteUrl();
     const accountLink = await stripe.accountLinks.create({
       account: stripeAccountId,
       refresh_url: `${origin}/dashboard/pro/profile?stripe=refresh`,
@@ -61,7 +63,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ url: accountLink.url });
   } catch (error: unknown) {
-    console.error('[STRIPE CONNECT] Error:', error);
+    logger.error('[STRIPE CONNECT] Error:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json({ error: message }, { status: 500 });
   }

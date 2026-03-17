@@ -5,6 +5,7 @@ import { COLLECTIONS } from '@/lib/firebase/collections';
 import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 import Stripe from 'stripe';
 import { sendEmail } from '@/lib/email/send';
+import logger from '@/lib/utils/logger';
 import {
   bookingStatusClient,
   bookingNotificationPro,
@@ -26,7 +27,7 @@ export async function POST(request: Request) {
 
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
     if (!webhookSecret) {
-      console.error('[STRIPE WEBHOOK] STRIPE_WEBHOOK_SECRET not set');
+      logger.error('[STRIPE WEBHOOK] STRIPE_WEBHOOK_SECRET not set');
       return NextResponse.json({ error: 'Webhook secret not configured' }, { status: 500 });
     }
 
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
     try {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
     } catch (err) {
-      console.error('[STRIPE WEBHOOK] Signature verification failed:', err);
+      logger.error('[STRIPE WEBHOOK] Signature verification failed:', err);
       return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
     }
 
@@ -65,7 +66,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ received: true });
   } catch (error: unknown) {
-    console.error('[STRIPE WEBHOOK] Error:', error);
+    logger.error('[STRIPE WEBHOOK] Error:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json({ error: message }, { status: 500 });
   }
@@ -77,11 +78,11 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   const proId = session.metadata?.proId;
 
   if (!bookingId) {
-    console.error('[STRIPE WEBHOOK] No bookingId in session metadata');
+    logger.error('[STRIPE WEBHOOK] No bookingId in session metadata');
     return;
   }
 
-  console.log(`[STRIPE WEBHOOK] Payment completed for booking ${bookingId}`);
+  logger.info(`[STRIPE WEBHOOK] Payment completed for booking ${bookingId}`);
 
   // Update booking with payment info and confirm it
   const bookingRef = adminDb.collection(COLLECTIONS.BOOKINGS).doc(bookingId);
@@ -183,7 +184,7 @@ async function handlePaymentFailed(paymentIntent: Stripe.PaymentIntent) {
   const bookingId = paymentIntent.metadata?.bookingId;
   const proId = paymentIntent.metadata?.proId;
 
-  console.warn(`[STRIPE WEBHOOK] Payment failed: ${paymentIntent.id}, booking: ${bookingId}`);
+  logger.warn(`[STRIPE WEBHOOK] Payment failed: ${paymentIntent.id}, booking: ${bookingId}`);
 
   if (!bookingId) return;
 
@@ -253,7 +254,7 @@ async function handlePaymentFailed(paymentIntent: Stripe.PaymentIntent) {
 
 // ─── Handle Stripe account updates (Connect) ───
 async function handleAccountUpdated(account: Stripe.Account) {
-  console.log(`[STRIPE WEBHOOK] Account updated: ${account.id}, charges: ${account.charges_enabled}, payouts: ${account.payouts_enabled}`);
+  logger.info(`[STRIPE WEBHOOK] Account updated: ${account.id}, charges: ${account.charges_enabled}, payouts: ${account.payouts_enabled}`);
 
   // Find the pro with this Stripe account
   const prosQuery = await adminDb
@@ -343,9 +344,9 @@ async function awardLoyaltyPoints(clientId: string, points: number, bookingId: s
       createdAt: Timestamp.now(),
     });
 
-    console.log(`[LOYALTY] Awarded ${points} points to ${clientId}`);
+    logger.info(`[LOYALTY] Awarded ${points} points to ${clientId}`);
   } catch (error) {
-    console.error('[LOYALTY] Error awarding points:', error);
+    logger.error('[LOYALTY] Error awarding points:', error);
     // Don't throw — loyalty failure shouldn't break payment flow
   }
 }

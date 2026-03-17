@@ -47,63 +47,84 @@ export async function GET(request: NextRequest) {
     const totalReviews = reviews.length;
     const totalServices = servicesSnap.size;
 
-    const activeUsers = users.filter((u: any) => u.isActive !== false).length;
-    const verifiedPros = professionals.filter((p: any) => p.isVerified).length;
+    const activeUsers = users.filter((u: unknown) => (u as { isActive?: unknown }).isActive !== false).length;
+    const verifiedPros = professionals.filter((p: unknown) => (p as { isVerified?: unknown }).isVerified).length;
 
-    const monthBookings = bookings.filter((b: any) => {
+    const monthBookings = bookings.filter((b: unknown) => {
       try {
-        const d = b.date?.toDate ? b.date.toDate() : new Date(b.date);
+        const booking = b as { date?: { toDate?: () => Date } | unknown };
+        const d = booking.date && typeof booking.date === 'object' && 'toDate' in booking.date ? (booking.date as { toDate: () => Date }).toDate() : new Date(booking.date as string);
         return d >= startOfMonth;
       } catch {
         return false;
       }
     });
 
-    const completedBookings = bookings.filter((b: any) => b.status === 'completed').length;
-    const pendingBookings = bookings.filter((b: any) => b.status === 'pending').length;
-    const cancelledBookings = bookings.filter((b: any) => b.status === 'cancelled').length;
+    const completedBookings = bookings.filter((b: unknown) => (b as { status?: unknown }).status === 'completed').length;
+    const pendingBookings = bookings.filter((b: unknown) => (b as { status?: unknown }).status === 'pending').length;
+    const cancelledBookings = bookings.filter((b: unknown) => (b as { status?: unknown }).status === 'cancelled').length;
 
     const totalRevenue = bookings
-      .filter((b: any) => b.status === 'completed' || b.status === 'confirmed')
-      .reduce((sum: number, b: any) => sum + (b.price || 0), 0);
+      .filter((b: unknown) => {
+        const status = (b as { status?: unknown }).status;
+        return status === 'completed' || status === 'confirmed';
+      })
+      .reduce((sum: number, b: unknown) => sum + ((b as { price?: number }).price || 0), 0);
 
     const monthRevenue = monthBookings
-      .filter((b: any) => b.status === 'completed' || b.status === 'confirmed')
-      .reduce((sum: number, b: any) => sum + (b.price || 0), 0);
+      .filter((b: unknown) => {
+        const status = (b as { status?: unknown }).status;
+        return status === 'completed' || status === 'confirmed';
+      })
+      .reduce((sum: number, b: unknown) => sum + ((b as { price?: number }).price || 0), 0);
 
     const avgRating = reviews.length > 0
-      ? Math.round((reviews.reduce((s: number, r: any) => s + (r.rating || 0), 0) / reviews.length) * 10) / 10
+      ? Math.round((reviews.reduce((s: number, r: unknown) => s + ((r as { rating?: number }).rating || 0), 0) / reviews.length) * 10) / 10
       : 0;
 
     // Serialize Timestamps for JSON
-    const serializeTimestamp = (val: any) => {
-      if (val && typeof val.toDate === 'function') return val.toDate().toISOString();
+    const serializeTimestamp = (val: unknown): string | unknown => {
+      if (val && typeof val === 'object' && 'toDate' in val && typeof (val as { toDate: unknown }).toDate === 'function') {
+        return ((val as { toDate: () => Date }).toDate()).toISOString();
+      }
       return val;
     };
 
-    const serializedUsers = users.map((u: any) => ({
-      ...u,
-      createdAt: serializeTimestamp(u.createdAt),
-      updatedAt: serializeTimestamp(u.updatedAt),
-    }));
+    const serializedUsers = users.map((u: unknown) => {
+      const user = u as { createdAt?: unknown; updatedAt?: unknown };
+      return {
+        ...user,
+        createdAt: serializeTimestamp(user.createdAt),
+        updatedAt: serializeTimestamp(user.updatedAt),
+      };
+    });
 
-    const serializedPros = professionals.map((p: any) => ({
-      ...p,
-      createdAt: serializeTimestamp(p.createdAt),
-      updatedAt: serializeTimestamp(p.updatedAt),
-    }));
+    const serializedPros = professionals.map((p: unknown) => {
+      const pro = p as { createdAt?: unknown; updatedAt?: unknown };
+      return {
+        ...pro,
+        createdAt: serializeTimestamp(pro.createdAt),
+        updatedAt: serializeTimestamp(pro.updatedAt),
+      };
+    });
 
-    const serializedBookings = bookings.map((b: any) => ({
-      ...b,
-      date: serializeTimestamp(b.date),
-      createdAt: serializeTimestamp(b.createdAt),
-      updatedAt: serializeTimestamp(b.updatedAt),
-    }));
+    const serializedBookings = bookings.map((b: unknown) => {
+      const booking = b as { date?: unknown; createdAt?: unknown; updatedAt?: unknown };
+      return {
+        ...booking,
+        date: serializeTimestamp(booking.date),
+        createdAt: serializeTimestamp(booking.createdAt),
+        updatedAt: serializeTimestamp(booking.updatedAt),
+      };
+    });
 
-    const serializedReviews = reviews.map((r: any) => ({
-      ...r,
-      createdAt: serializeTimestamp(r.createdAt),
-    }));
+    const serializedReviews = reviews.map((r: unknown) => {
+      const review = r as { createdAt?: unknown };
+      return {
+        ...review,
+        createdAt: serializeTimestamp(review.createdAt),
+      };
+    });
 
     return NextResponse.json({
       stats: {
@@ -127,7 +148,7 @@ export async function GET(request: NextRequest) {
       bookings: serializedBookings,
       reviews: serializedReviews,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Admin stats error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }

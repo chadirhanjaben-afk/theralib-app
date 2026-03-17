@@ -26,7 +26,7 @@ export default function AdminDashboard() {
   const { user } = useAuth();
   const router = useRouter();
   const [stats, setStats] = useState<Stats | null>(null);
-  const [recentBookings, setRecentBookings] = useState<any[]>([]);
+  const [recentBookings, setRecentBookings] = useState<unknown[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -48,7 +48,11 @@ export default function AdminDashboard() {
         setStats(data.stats);
         // Get 5 most recent bookings
         const sorted = (data.bookings || [])
-          .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+          .sort((a: unknown, b: unknown) => {
+            const aTime = (a as { createdAt: unknown }).createdAt;
+            const bTime = (b as { createdAt: unknown }).createdAt;
+            return new Date(bTime as string).getTime() - new Date(aTime as string).getTime();
+          })
           .slice(0, 5);
         setRecentBookings(sorted);
       } catch (err) {
@@ -211,7 +215,7 @@ export default function AdminDashboard() {
             </div>
           ) : (
             <div className="space-y-3">
-              {recentBookings.map((b: any) => (
+              {recentBookings.map((b: Record<string, unknown>) => (
                 <div key={b.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
                   <div>
                     <p className="text-sm font-medium">

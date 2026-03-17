@@ -4,6 +4,8 @@ import { adminDb } from '@/lib/firebase/admin';
 import { COLLECTIONS } from '@/lib/firebase/collections';
 import { requireAuth, isAuthError, apiError } from '@/lib/utils/api-helpers';
 import { PLANS } from '@/lib/subscriptions/plans';
+import { getSiteUrl } from '@/lib/utils/site-url';
+import logger from '@/lib/utils/logger';
 import type { PlanTier } from '@/lib/subscriptions/plans';
 
 /**
@@ -56,7 +58,7 @@ export async function POST(request: NextRequest) {
       return apiError('Vous êtes déjà sur ce plan', 400);
     }
 
-    const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const origin = request.headers.get('origin') || getSiteUrl();
     const price = billing === 'yearly' ? plan.priceYearly : plan.priceMonthly;
     const interval = billing === 'yearly' ? 'year' : 'month';
 
@@ -116,7 +118,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ url: session.url });
   } catch (error: unknown) {
-    console.error('[STRIPE SUBSCRIPTION] Error:', error);
+    logger.error('[STRIPE SUBSCRIPTION] Error:', error);
     const message = error instanceof Error ? error.message : 'Erreur serveur';
     return NextResponse.json({ error: message }, { status: 500 });
   }
@@ -152,7 +154,7 @@ export async function GET(request: NextRequest) {
       currentPeriodEnd: proData.currentPeriodEnd || null,
     });
   } catch (error: unknown) {
-    console.error('[STRIPE SUBSCRIPTION GET] Error:', error);
+    logger.error('[STRIPE SUBSCRIPTION GET] Error:', error);
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase/admin';
 import { sendEmail } from '@/lib/email/send';
+import logger from '@/lib/utils/logger';
 import { bookingReminderClient, bookingReminderPro } from '@/lib/email/templates';
 import { Timestamp } from 'firebase-admin/firestore';
 
@@ -23,7 +24,7 @@ export async function GET(request: NextRequest) {
 
   // Always require CRON_SECRET — if not set, reject all requests
   if (!cronSecret) {
-    console.error('[cron/reminders] CRON_SECRET is not configured');
+    logger.error('[cron/reminders] CRON_SECRET is not configured');
     return NextResponse.json({ error: 'Service non configuré' }, { status: 503 });
   }
 
@@ -48,7 +49,7 @@ export async function GET(request: NextRequest) {
     const tomorrowTs = Timestamp.fromDate(tomorrow);
     const dayAfterTs = Timestamp.fromDate(dayAfter);
 
-    console.log(`[Cron Reminders] Checking bookings for ${tomorrow.toISOString().split('T')[0]}`);
+    logger.info(`[Cron Reminders] Checking bookings for ${tomorrow.toISOString().split('T')[0]}`);
 
     // ─── Query confirmed bookings for tomorrow ───
     const snap = await adminDb
@@ -59,7 +60,7 @@ export async function GET(request: NextRequest) {
       .get();
 
     if (snap.empty) {
-      console.log('[Cron Reminders] No confirmed bookings for tomorrow');
+      logger.info('[Cron Reminders] No confirmed bookings for tomorrow');
       return NextResponse.json({
         success: true,
         sent: 0,
@@ -69,7 +70,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    console.log(`[Cron Reminders] Found ${snap.size} confirmed bookings`);
+    logger.info(`[Cron Reminders] Found ${snap.size} confirmed bookings`);
 
     let sent = 0;
     let skipped = 0;
@@ -188,11 +189,11 @@ export async function GET(request: NextRequest) {
         });
 
         sent++;
-        console.log(`[Cron Reminders] ✅ Sent for booking ${bookingId}`);
+        logger.info(`[Cron Reminders] ✅ Sent for booking ${bookingId}`);
       } catch (err) {
         const msg = err instanceof Error ? err.message : 'Unknown error';
         errors.push(`${bookingId}: ${msg}`);
-        console.error(`[Cron Reminders] ❌ Error for ${bookingId}:`, msg);
+        logger.error(`[Cron Reminders] ❌ Error for ${bookingId}:`, msg);
       }
     }
 
@@ -205,11 +206,11 @@ export async function GET(request: NextRequest) {
       timestamp: new Date().toISOString(),
     };
 
-    console.log('[Cron Reminders] Done:', JSON.stringify(summary));
+    logger.info('[Cron Reminders] Done:', JSON.stringify(summary));
     return NextResponse.json(summary);
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
-    console.error('[Cron Reminders] Fatal:', message);
+    logger.error('[Cron Reminders] Fatal:', message);
     return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }

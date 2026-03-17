@@ -40,9 +40,9 @@ export async function GET(request: NextRequest) {
     };
 
     return NextResponse.json({ user: userData });
-  } catch (error: any) {
-    const code = error?.code || error?.errorInfo?.code || '';
-    const message = error?.message || '';
+  } catch (error: unknown) {
+    const code = (error as { code?: string; errorInfo?: { code: string } }).code || (error as { code?: string; errorInfo?: { code: string } }).errorInfo?.code || '';
+    const message = (error as { message?: string }).message || '';
     console.error('[Me API] Error:', code, message);
 
     // Only clear the cookie for actual auth errors (expired/revoked/invalid token)

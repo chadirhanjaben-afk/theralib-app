@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminAuth, adminDb } from '@/lib/firebase/admin';
 import { COLLECTIONS } from '@/lib/firebase/collections';
+import logger from '@/lib/utils/logger';
 
 // Helper to verify admin role
 async function verifyAdmin(request: NextRequest) {
@@ -40,11 +41,11 @@ export async function DELETE(request: NextRequest) {
 
     await reviewRef.delete();
 
-    console.log(`[ADMIN] Review ${reviewId} deleted by admin ${adminUid}`);
+    logger.info(`[ADMIN] Review ${reviewId} deleted by admin ${adminUid}`);
 
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
-    console.error('[ADMIN] Delete review error:', error);
+    logger.error('[ADMIN] Delete review error:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json({ error: message }, { status: 500 });
   }

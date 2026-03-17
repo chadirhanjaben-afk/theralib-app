@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe/config';
 import { adminDb } from '@/lib/firebase/admin';
 import { COLLECTIONS } from '@/lib/firebase/collections';
+import { getSiteUrl } from '@/lib/utils/site-url';
+import logger from '@/lib/utils/logger';
 
 // POST: Create a Stripe Checkout Session for a booking
 // Using DIRECT charges: payment goes directly to the pro's connected account
@@ -41,7 +43,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const origin = request.headers.get('origin') || getSiteUrl();
 
     // Create Checkout Session using DIRECT charges on the connected account
     // The payment is created directly on the pro's Stripe account
@@ -81,7 +83,7 @@ export async function POST(request: Request) {
       url: session.url,
     });
   } catch (error: unknown) {
-    console.error('[STRIPE CHECKOUT] Error:', error);
+    logger.error('[STRIPE CHECKOUT] Error:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json({ error: message }, { status: 500 });
   }

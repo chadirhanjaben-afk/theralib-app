@@ -68,8 +68,9 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({ code });
-  } catch (error: any) {
-    console.error('[generate-code] Error:', error?.message || error);
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('[generate-code] Error:', errorMsg);
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }

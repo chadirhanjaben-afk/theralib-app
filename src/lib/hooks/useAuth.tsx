@@ -104,13 +104,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (!res.ok) {
         const err = new Error(data.error || 'Login failed');
-        (err as any).code = data.code || 'auth/unknown';
+        (err as unknown as { code: string }).code = data.code || 'auth/unknown';
         throw err;
       }
 
       setUser(data.user);
       setLoading(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setLoading(false);
       throw err; // let the login page handle the error display
     }
@@ -132,13 +132,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (!res.ok) {
         const err = new Error(data.error || 'Signup failed');
-        (err as any).code = data.code || 'auth/unknown';
+        (err as unknown as { code: string }).code = data.code || 'auth/unknown';
         throw err;
       }
 
       setUser(data.user);
       setLoading(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setLoading(false);
       throw err;
     }
@@ -172,7 +172,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setUser(data.user);
       setLoading(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setLoading(false);
       throw err;
     }

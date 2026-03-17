@@ -1,4 +1,5 @@
 'use client';
+import logger from '@/lib/utils/logger';
 
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
@@ -53,12 +54,12 @@ function RegisterContent() {
       });
       const data = await res.json();
       if (!res.ok) {
-        console.warn('[Referral] Code not applied:', data.error);
+        logger.warn('[Referral] Code not applied:', data.error);
       } else {
-        console.log('[Referral] Code applied successfully');
+        logger.info('[Referral] Code applied successfully');
       }
     } catch (err) {
-      console.warn('[Referral] Failed to apply code:', err);
+      logger.warn('[Referral] Failed to apply code:', err);
     }
   };
 
@@ -85,10 +86,11 @@ function RegisterContent() {
       }
 
       router.push(role === 'professional' ? '/dashboard/pro' : '/dashboard/client');
-    } catch (err: any) {
-      if (err.code === 'auth/email-already-in-use') {
+    } catch (err: unknown) {
+      const errorCode = (err instanceof Error && 'code' in err) ? (err as { code: string }).code : '';
+      if (errorCode === 'auth/email-already-in-use') {
         setError('Cet email est déjà utilisé. Connectez-vous ou utilisez un autre email.');
-      } else if (err.code === 'auth/weak-password') {
+      } else if (errorCode === 'auth/weak-password') {
         setError('Le mot de passe est trop faible.');
       } else {
         setError('Une erreur est survenue. Veuillez réessayer.');
@@ -109,7 +111,7 @@ function RegisterContent() {
       }
 
       router.push(role === 'professional' ? '/dashboard/pro' : '/dashboard/client');
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError('Erreur lors de la connexion avec Google.');
     }
   };

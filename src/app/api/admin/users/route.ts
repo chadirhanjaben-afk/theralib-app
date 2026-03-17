@@ -120,7 +120,7 @@ export async function PATCH(request: NextRequest) {
       default:
         return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Admin user update error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }

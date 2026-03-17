@@ -44,7 +44,7 @@ export default function AdminUsersPage() {
     }
   };
 
-  const handleAction = async (userId: string, action: string, data?: any) => {
+  const handleAction = async (userId: string, action: string, data?: unknown) => {
     setActionLoading(userId + action);
     try {
       const res = await fetch('/api/admin/users', {

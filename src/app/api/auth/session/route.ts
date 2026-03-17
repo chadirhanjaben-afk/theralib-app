@@ -28,10 +28,11 @@ export async function POST(request: NextRequest) {
     });
 
     return response;
-  } catch (error: any) {
-    console.error('[Session API] Cookie creation failed:', error?.message || error);
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('[Session API] Cookie creation failed:', errorMsg);
     return NextResponse.json(
-      { error: error?.message || 'Session creation failed' },
+      { error: errorMsg || 'Session creation failed' },
       { status: 401 }
     );
   }

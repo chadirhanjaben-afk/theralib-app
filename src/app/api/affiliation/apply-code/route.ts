@@ -90,10 +90,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       affiliationId: affRef.id,
-      referrerName: referrerDoc.data().displayName || 'Un utilisateur',
+      referrerName: (referrerDoc.data() as { displayName?: string }).displayName || 'Un utilisateur',
     });
-  } catch (error: any) {
-    console.error('[apply-code] Error:', error?.message || error);
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('[apply-code] Error:', errorMsg);
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }

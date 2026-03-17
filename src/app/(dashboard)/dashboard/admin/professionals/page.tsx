@@ -24,7 +24,7 @@ export default function AdminProfessionalsPage() {
   const { user } = useAuth();
   const router = useRouter();
   const [professionals, setProfessionals] = useState<ProData[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<unknown[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'verified' | 'unverified'>('all');
@@ -52,8 +52,8 @@ export default function AdminProfessionalsPage() {
   };
 
   const getUserEmail = (userId: string) => {
-    const user = users.find((u: any) => u.uid === userId);
-    return user?.email || '?';
+    const user = users.find((u: unknown) => (u as { uid: string }).uid === userId);
+    return (user as { email?: string } | undefined)?.email || '?';
   };
 
   const handleVerify = async (pro: ProData) => {

@@ -7,9 +7,9 @@ import { useRouter } from 'next/navigation';
 export default function AdminReviewsPage() {
   const { user } = useAuth();
   const router = useRouter();
-  const [reviews, setReviews] = useState<any[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
-  const [professionals, setProfessionals] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<unknown[]>([]);
+  const [users, setUsers] = useState<unknown[]>([]);
+  const [professionals, setProfessionals] = useState<unknown[]>([]);
   const [loading, setLoading] = useState(true);
   const [ratingFilter, setRatingFilter] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -38,13 +38,13 @@ export default function AdminReviewsPage() {
   };
 
   const getUserName = (id: string) => {
-    const u = users.find((u: any) => u.uid === id);
-    return u?.displayName || u?.email || '?';
+    const u = users.find((u: unknown) => (u as { uid: string }).uid === id);
+    return (u as { displayName?: string; email?: string } | undefined)?.displayName || (u as { displayName?: string; email?: string } | undefined)?.email || '?';
   };
 
   const getProName = (id: string) => {
-    const p = professionals.find((p: any) => p.uid === id || p.userId === id);
-    return p?.businessName || '?';
+    const p = professionals.find((p: unknown) => (p as { uid?: string; userId?: string }).uid === id || (p as { uid?: string; userId?: string }).userId === id);
+    return (p as { businessName?: string } | undefined)?.businessName || '?';
   };
 
   const handleDeleteReview = async (reviewId: string) => {
@@ -77,7 +77,7 @@ export default function AdminReviewsPage() {
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   const avgRating = reviews.length > 0
-    ? (reviews.reduce((s: number, r: any) => s + r.rating, 0) / reviews.length).toFixed(1)
+    ? (reviews.reduce((s: number, r: unknown) => s + (r as { rating: number }).rating, 0) / reviews.length).toFixed(1)
     : '0';
 
   if (loading) {

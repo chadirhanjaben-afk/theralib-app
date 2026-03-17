@@ -24,17 +24,19 @@ function LoginForm() {
     try {
       await signIn(email, password);
       router.push(redirectTo);
-    } catch (err: any) {
-      if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : 'Une erreur est survenue. Veuillez réessayer.';
+      const errorCode = (err instanceof Error && 'code' in err) ? (err as { code: string }).code : '';
+      if (errorCode === 'auth/invalid-credential' || errorCode === 'auth/wrong-password' || errorCode === 'auth/user-not-found') {
         setError('Email ou mot de passe incorrect.');
-      } else if (err.code === 'auth/too-many-requests') {
+      } else if (errorCode === 'auth/too-many-requests') {
         setError('Trop de tentatives. Veuillez réessayer plus tard.');
-      } else if (err.code === 'auth/invalid-email') {
+      } else if (errorCode === 'auth/invalid-email') {
         setError('Adresse email invalide.');
-      } else if (err.message?.includes('timed out')) {
+      } else if (errorMsg?.includes('timed out')) {
         setError('La connexion a expiré. Veuillez réessayer.');
       } else {
-        setError(err.message || 'Une erreur est survenue. Veuillez réessayer.');
+        setError(errorMsg || 'Une erreur est survenue. Veuillez réessayer.');
       }
     } finally {
       setLoading(false);
@@ -47,7 +49,7 @@ function LoginForm() {
     try {
       await signInWithGoogle();
       router.push(redirectTo);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError('Erreur lors de la connexion avec Google.');
     } finally {
       setLoading(false);

@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import logger from '@/lib/utils/logger';
 
 /**
  * Resend client wrapper.
@@ -15,13 +16,13 @@ export async function getResend(): Promise<Resend | null> {
   const resendApiKey = process.env.RESEND_API_KEY;
 
   if (!resendApiKey) {
-    console.warn('[Email] RESEND_API_KEY not configured — emails disabled');
+    logger.warn('[Email] RESEND_API_KEY not configured — emails disabled');
     return null;
   }
 
-  console.log('[Email] RESEND_API_KEY found, initializing Resend client...');
+  logger.info('[Email] RESEND_API_KEY found, initializing Resend client...');
   _resend = new Resend(resendApiKey);
-  console.log('[Email] Resend client initialized successfully');
+  logger.info('[Email] Resend client initialized successfully');
 
   return _resend;
 }

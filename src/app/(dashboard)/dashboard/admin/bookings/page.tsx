@@ -7,9 +7,9 @@ import { useRouter } from 'next/navigation';
 export default function AdminBookingsPage() {
   const { user } = useAuth();
   const router = useRouter();
-  const [bookings, setBookings] = useState<any[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
-  const [professionals, setProfessionals] = useState<any[]>([]);
+  const [bookings, setBookings] = useState<unknown[]>([]);
+  const [users, setUsers] = useState<unknown[]>([]);
+  const [professionals, setProfessionals] = useState<unknown[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>('all');
 
@@ -37,13 +37,13 @@ export default function AdminBookingsPage() {
   };
 
   const getUserName = (id: string) => {
-    const u = users.find((u: any) => u.uid === id);
-    return u?.displayName || u?.email || id?.slice(0, 8) + '...';
+    const u = users.find((u: unknown) => (u as { uid: string }).uid === id);
+    return (u as { displayName?: string; email?: string } | undefined)?.displayName || (u as { displayName?: string; email?: string } | undefined)?.email || id?.slice(0, 8) + '...';
   };
 
   const getProName = (id: string) => {
-    const p = professionals.find((p: any) => p.uid === id || p.userId === id);
-    return p?.businessName || getUserName(id);
+    const p = professionals.find((p: unknown) => (p as { uid?: string; userId?: string }).uid === id || (p as { uid?: string; userId?: string }).userId === id);
+    return (p as { businessName?: string } | undefined)?.businessName || getUserName(id);
   };
 
   const filteredBookings = bookings

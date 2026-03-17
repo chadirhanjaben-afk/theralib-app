@@ -153,7 +153,7 @@ export default function RepertoirePage() {
           </div>
           <select
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as any)}
+            onChange={(e) => setSortBy(e.target.value as 'rating' | 'price' | 'reviews')}
             className="input-field w-auto text-sm py-2"
           >
             <option value="rating">Meilleures notes</option>

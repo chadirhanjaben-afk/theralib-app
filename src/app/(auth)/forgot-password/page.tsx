@@ -19,13 +19,14 @@ export default function ForgotPasswordPage() {
     try {
       await sendPasswordResetEmail(auth, email);
       setSent(true);
-    } catch (err: any) {
-      if (err.code === 'auth/user-not-found') {
+    } catch (err: unknown) {
+      const errorCode = (err instanceof Error && 'code' in err) ? (err as { code: string }).code : '';
+      if (errorCode === 'auth/user-not-found') {
         // Don't reveal whether the email exists — security best practice
         setSent(true);
-      } else if (err.code === 'auth/invalid-email') {
+      } else if (errorCode === 'auth/invalid-email') {
         setError('Adresse email invalide.');
-      } else if (err.code === 'auth/too-many-requests') {
+      } else if (errorCode === 'auth/too-many-requests') {
         setError('Trop de tentatives. Veuillez réessayer plus tard.');
       } else {
         setError('Une erreur est survenue. Veuillez réessayer.');

@@ -52,8 +52,9 @@ export async function GET(request: NextRequest) {
     };
 
     return NextResponse.json({ availability: defaults });
-  } catch (error: any) {
-    console.error('[Availability GET] Error:', error?.message);
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('[Availability GET] Error:', errorMsg);
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }
@@ -82,8 +83,9 @@ export async function POST(request: NextRequest) {
     }, { merge: true });
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
-    console.error('[Availability POST] Error:', error?.message);
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('[Availability POST] Error:', errorMsg);
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }

@@ -45,7 +45,7 @@ declare namespace google.maps {
     mapTypeControl?: boolean;
     streetViewControl?: boolean;
     fullscreenControl?: boolean;
-    styles?: any[];
+    styles?: Array<Record<string, unknown>>;
   }
 
   interface MarkerOptions {
@@ -53,7 +53,7 @@ declare namespace google.maps {
     map?: Map;
     title?: string;
     animation?: number;
-    icon?: any;
+    icon?: string | Record<string, unknown>;
   }
 
   interface LatLngLiteral {
